@@ -3,7 +3,9 @@ const asyncH = require("express-async-handler");
 const Spreadsheet = require("google-spreadsheet");
 const { promisify } = require("util");
 
-const creds = require("./client-secret.json");
+// const creds = require("./client-secret.json");
+const creds = JSON.parse(process.env.SECRET || "{}");
+console.log(process.env.SECRET);
 const app = express();
 
 // Body parser
@@ -22,16 +24,16 @@ app.post(
   "/:sheetId",
   asyncH(async (req, res) => {
     try {
-      const ref = req.header("Referer");
+      const ref = req.header("Referer") || "https://google.com";
       const { sheetId } = req.params;
       const doc = new Spreadsheet(sheetId);
       const sheet = await getSheet(0, doc);
       await promisify(sheet.addRow)(req.body);
 
-      res.redirect(ref, 200);
+      res.redirect(200, ref);
     } catch (err) {
       console.log(err);
-      res.redirect(ref, 500);
+      res.redirect(500, ref);
     }
   })
 );
