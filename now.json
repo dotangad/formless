@@ -3,9 +3,13 @@
   "builds": [{ "src": "app.js", "use": "@now/node-server" }],
   "routes": [
     {
-      "src": "/",
+      "src": ".*",
       "dest": "/app.js",
       "methods": ["POST"]
     }
-  ]
+  ],
+  "env": {
+    "PRIVATE_KEY": "@private-key",
+    "CLIENT_EMAIL": "sheet-access@carbonkarma-xino.iam.gserviceaccount.com"
+  }
 }

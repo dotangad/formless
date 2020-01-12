@@ -4,13 +4,16 @@ const Spreadsheet = require("google-spreadsheet");
 const { promisify } = require("util");
 
 // const creds = require("./client-secret.json");
-const creds = JSON.parse(process.env.SECRET || "{}");
-console.log(process.env.SECRET);
+// const creds = JSON.parse(process.env.secret || "{}");
+const creds = {
+  client_email: process.env.CLIENT_EMAIL,
+  private_key: Buffer.from(process.env.PRIVATE_KEY, "base64").toString()
+};
 const app = express();
 
 // Body parser
 app.use(express.urlencoded({ extended: false }));
-// app.use(express.json());
+app.use(express.json());
 
 async function getSheet(n, doc) {
   // Authenticate with the Google Spreadsheets API.
@@ -23,8 +26,8 @@ async function getSheet(n, doc) {
 app.post(
   "/:sheetId",
   asyncH(async (req, res) => {
+    const ref = req.header("Referer") || "https://google.com";
     try {
-      const ref = req.header("Referer") || "https://google.com";
       const { sheetId } = req.params;
       const doc = new Spreadsheet(sheetId);
       const sheet = await getSheet(0, doc);
