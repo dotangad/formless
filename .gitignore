@@ -3,3 +3,5 @@ node_modules
 client-secret.json
 PRIVATE_KEY
 .env
+
+.now
